@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import pandas as pd
 import numpy as np
 import random
+import time
 from lxml import etree
 
-def get_ref_record(url):
+drug_pages = pd.read_csv('LiverTox_Drugs_URL.csv')
+
+def get_DILI_ref(url):
     content = requests.get(url).content
     html = etree.HTML(content)
 
@@ -32,3 +37,17 @@ def get_ref_record(url):
     record['Comment'] = result_comment
 
     return record
+
+whole_record = pd.DataFrame(np.zeros((1,4)),columns = ['Drug','Ref','Pubmed','Comment'])
+
+#for each in drug_pages['URL']:
+for i in range(501):
+    each = drug_pages.iloc[i,0]
+    new_record = get_DILI_ref(each)
+    whole_record = pd.concat([whole_record,new_record])
+    print('The current number is {}, and {}% have been finished'.format(i,i/500*100))
+    
+    sleep_time = random.randint(5,20)
+    time.sleep(sleep_time)
+    
+whole_record.to_csv('ref_from_1to500.csv')

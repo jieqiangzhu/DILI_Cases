@@ -28,7 +28,7 @@ for each in urls:
     drug_pages.update(get_drug_list(each))
     time.sleep(20)
 
-with open ('drug_pages.csv','w') as f:
-    w = csv.DictWriter(f, drug_pages.keys())
-    w.writeheader()
-    w.writerow(drug_pages)
+with open('drug_pages.csv', 'w') as csv_file:
+    writer = csv.writer(csv_file)
+    for key, value in drug_pages.items():
+       writer.writerow([key, value])
